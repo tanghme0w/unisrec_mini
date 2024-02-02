@@ -37,7 +37,7 @@ class PretrainTrainer(Trainer):
                 train_data,
                 total=len(train_data),
                 ncols=100,
-                desc=f"Train {epoch_idx:>5}"
+                desc=f"Train {epoch_idx}"
             )
             if show_progress
             else train_data
@@ -54,7 +54,7 @@ class PretrainTrainer(Trainer):
             self.optimizer.step()
             return total_loss
 
-    def pretrain(self, train_data, verbose=True, show_progress=False):
+    def pretrain(self, train_data, show_progress=False):
         for epoch_idx in range(self.start_epoch, self.pretrain_epochs):
             training_start_time = time()
             train_loss = self._train_epoch(
@@ -69,7 +69,7 @@ class PretrainTrainer(Trainer):
                 save_model_file = os.path.join(
                     self.checkpoint_dir,
                     "{}-{}-{}.pth".format(
-                        self.config["model"], self.config["dataset"], str(epoch_idx + 1)
+                        "MISSRec", "news", str(epoch_idx + 1)
                     )
                 )
                 self.save_pretrained_model(epoch_idx, save_model_file)

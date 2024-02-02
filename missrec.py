@@ -146,30 +146,14 @@ class MISSRec(SASRec):
         same_pos_id = torch.logical_xor(same_pos_id, torch.eye(pos_id.shape[0], dtype=torch.bool, device=pos_id.device))
 
         loss_seq_item = self.seq_item_contrastive_task(seq_output, same_pos_id, interaction)
-        loss_seq_seq = self.seq_seq_contrastive_task(seq_output, same_pos_id, interaction)
-        loss = loss_seq_item + self.lam * loss_seq_seq
+        # Haomiao Tang: discard seq_seq_loss
+        loss = loss_seq_item
         return loss
 
     def calculate_loss(self, interaction):
+        # Modification by Haomiao Tang: only for pretrain
         if self.train_stage == 'pretrain':
             return self.pretrain(interaction)
-
-        # Loss for fine-tuning
-        item_seq = interaction[self.ITEM_SEQ]
-        item_seq_len = interaction[self.ITEM_SEQ_LEN]
-        item_emb_list = self.moe_adaptor(self.plm_embedding(item_seq))
-        seq_output = self.forward(item_seq, item_emb_list, item_seq_len)
-        test_item_emb = self.moe_adaptor(self.plm_embedding.weight)
-        if self.train_stage == 'transductive_ft':
-            test_item_emb = test_item_emb + self.item_embedding.weight
-
-        seq_output = F.normalize(seq_output, dim=1)
-        test_item_emb = F.normalize(test_item_emb, dim=1)
-
-        logits = torch.matmul(seq_output, test_item_emb.transpose(0, 1)) / self.temperature
-        pos_items = interaction[self.POS_ITEM_ID]
-        loss = self.loss_fct(logits, pos_items)
-        return loss
 
     def full_sort_predict(self, interaction):
         item_seq = interaction[self.ITEM_SEQ]

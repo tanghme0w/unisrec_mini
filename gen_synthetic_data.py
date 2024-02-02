@@ -3,9 +3,9 @@ import json
 import random
 
 # Constants
-NUM_USERS = 500000  # Adjust this number according to your requirement
+NUM_USERS = 100  # Adjust this number according to your requirement
 SEQUENCE_LENGTH = 50
-ITEM_ID_RANGE = (2, 100000)
+ITEM_ID_RANGE = (2, 100)
 MAX_EFFECTIVE_ITEMS = 50  # Maximum number of effective item_ids
 
 

@@ -19,7 +19,7 @@ def pretrain(dataset, **kwargs):
 
     # trainer
     trainer = PretrainTrainer(config, model)
-    trainer.pretrain(dataloader, show_progress=True)
+    trainer.pretrain(dataloader, show_progress=False)
 
 
 if __name__ == '__main__':
