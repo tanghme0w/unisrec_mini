@@ -1,3 +1,9 @@
 user_item_interaction_data.jsonl
 .idea/
 .DS_STORE
+saved/
+__pycache__/
+data.mmap*
+idx.mmap*
+*.json
+*.jsonl
