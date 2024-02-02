@@ -11,7 +11,7 @@ class Config:
         self.config['mmap_emb_shape'] = (100, 768)
         self.config['mmap_emb_path'] = 'data/data.mmap_100_768'
         self.config['device'] = 'cpu'
-        self.config['train_batch_size'] = 10
+        self.config['train_batch_size'] = 5
         # model hyperparameters
         self.config["n_layers"] = 2
         self.config["n_heads"] = 2

@@ -12,14 +12,14 @@ def pretrain(dataset, **kwargs):
 
     # dataset
     dataset = PretrainDataset(config)
-    dataloader = CustomizedTrainDataloader(config, dataset, shuffle=True)
+    dataloader = CustomizedTrainDataloader(config, dataset, shuffle=False)
 
     # model
     model = MISSRec(config, dataset).to(config['device'])
 
     # trainer
     trainer = PretrainTrainer(config, model)
-    trainer.pretrain(dataloader, show_progress=False)
+    trainer.pretrain(dataloader, show_progress=True)
 
 
 if __name__ == '__main__':
