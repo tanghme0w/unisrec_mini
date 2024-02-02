@@ -52,7 +52,8 @@ class PretrainTrainer(Trainer):
                 raise ValueError("Training loss is nan")
             loss.backward()
             self.optimizer.step()
-            return total_loss
+
+        return total_loss
 
     def pretrain(self, train_data, show_progress=False):
         for epoch_idx in range(self.start_epoch, self.pretrain_epochs):
