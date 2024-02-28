@@ -3,7 +3,7 @@ class Config:
             self, model=None, dataset=None, config_file_list=None, config_dict=None
     ):
         self.config = dict()
-        self.config['data_path'] = "data/user_item_interaction_data.jsonl"
+        self.config['data_path'] = "data/interaction"
         self.config['worker'] = 0
         self.config['single_spec'] = True
         self.config['mmap_idx_path'] = 'data/idx.mmap_100'
@@ -11,7 +11,7 @@ class Config:
         self.config['mmap_emb_shape'] = (100, 768)
         self.config['mmap_emb_path'] = 'data/data.mmap_100_768'
         self.config['device'] = 'cpu'
-        self.config['train_batch_size'] = 10
+        self.config['train_batch_size'] = 5
         # model hyperparameters
         self.config["n_layers"] = 2
         self.config["n_heads"] = 2
