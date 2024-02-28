@@ -4,6 +4,7 @@ from time import time
 import torch
 from torch import optim
 from tqdm import tqdm
+import numpy as np
 
 
 class Trainer:
@@ -84,6 +85,62 @@ class PretrainTrainer(Trainer):
             "other_parameter": self.model.other_parameter(),
         }
         torch.save(state, saved_model_file)
+
+    def evaluate(self, eval_data, show_progress):
+        pass
+        # load model: best or current model
+        # TODO
+        # set model to eval mode
+        self.model.eval()
+        # build the eval dataloader as FullSortEvalDataLoader
+        # TODO
+        eval_func = self._full_sort_batch_eval
+        if self.item_tensor is None:
+            # item_tensor: all item ids
+            self.item_tensor = eval_data._dataset.get_item_feature().to(self.device)
+        self.tot_item_num = eval_data._dataset.item_num
+        iter_data = (
+            tqdm(
+                eval_data,
+                desc="evaluate"
+            )
+            if show_progress
+            else eval_data
+        )
+        num_sample = 0
+        for batch_idx, batched_data in enumerate(iter_data):
+            num_sample += len(batched_data)
+            interaction, scores, positive_u, positive_i = eval_func(batched_data)
+            self.eval_collector.eval_batch_collect(
+                scores, interaction, positive_u, positive_i
+            )
+        self.eval_collector.model_collect(self.model)
+        struct = self.eval_collector.get_data_struct()
+        result = self.evaluator.evaluate(struct)
+        if not self.config["single_spec"]:
+            result = self._map_reduce(result, num_sample)
+        return result
+
+    def _full_sort_batch_eval(self, batched_data):
+        interaction, history_index, positive_u, positive_i = batched_data
+        try:
+            # Note: interaction without item ids
+            scores = self.model.full_sort_predict(interaction.to(self.device))
+        except NotImplementedError:
+            inter_len = len(interaction)
+            new_inter = interaction.to(self.device).repeat_interleave(self.tot_item_num)
+            batch_size = len(new_inter)
+            new_inter.update(self.item_tensor.repeat(inter_len))
+            if batch_size <= self.test_batch_size:
+                scores = self.model.predict(new_inter)
+            else:
+                scores = self._spilt_predict(new_inter, batch_size)
+
+        scores = scores.view(-1, self.tot_item_num)
+        scores[:, 0] = -np.inf
+        if history_index is not None:
+            scores[history_index] = -np.inf
+        return interaction, scores, positive_u, positive_i
 
 
 class DDPPretrainTrainer(Trainer):
