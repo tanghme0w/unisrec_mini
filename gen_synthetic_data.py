@@ -26,6 +26,6 @@ updated_data = [generate_user_data(user_id, MAX_EFFECTIVE_ITEMS, SEQUENCE_LENGTH
 jsonl_data = '\n'.join(json.dumps(entry) for entry in updated_data)
 
 # Saving to a file
-file_path = 'data/user_item_interaction_data.jsonl'
+file_path = 'data/interaction/user_item_interaction_data_1.jsonl'
 with open(file_path, 'w') as file:
     file.write(jsonl_data)
