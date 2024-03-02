@@ -6,7 +6,7 @@ from dataloader import CustomizedTrainDataloader
 from trainer import PretrainTrainer
 
 
-def pretrain(dataset, **kwargs):
+def pretrain():
     # config includes dataset config & model config
     config = Config()
 
@@ -23,9 +23,4 @@ def pretrain(dataset, **kwargs):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-d', type=str, default='FHCKM', help='dataset name')
-    args, unparsed = parser.parse_known_args()
-    print(args)
-
-    pretrain(args.d)
+    pretrain()

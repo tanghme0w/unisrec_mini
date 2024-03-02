@@ -18,7 +18,7 @@ class PretrainDataset(Dataset):
         self.data_path = config['data_path']
         self._load_data()
         # do preprocessing
-        self._data_preprocessing()
+        self._data_preprocessing()  # has no effect for now
 
     def _load_data(self):
         self.data_files = []
@@ -30,6 +30,8 @@ class PretrainDataset(Dataset):
                 # only collect files more than 10KB
                 if os.path.getsize(file_path) >= 10240 and file_path.endswith('.jsonl'):
                     self.data_files.append(file_path)
+        else:
+            self.data_files.append(self.data_path)
 
         # count total size
         entry_count = 0

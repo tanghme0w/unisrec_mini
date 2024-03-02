@@ -11,6 +11,7 @@ class PLMEmb:
         self.mmap_idx_shape = config['mmap_idx_shape']
         self.mmap_emb_shape = config['mmap_emb_shape']
 
+    # TODO: can we eliminate 'dataset' parameter here?
     def __call__(self, dataset, interaction):
         item_seq = interaction['item_id_list']
         pos_item = interaction['item_id']

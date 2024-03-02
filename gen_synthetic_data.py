@@ -3,15 +3,15 @@ import json
 import random
 
 # Constants
-NUM_USERS = 100  # Adjust this number according to your requirement
+NUM_USERS = 15  # Adjust this number according to your requirement
 SEQUENCE_LENGTH = 50
-ITEM_ID_RANGE = (2, 100)
+ITEM_ID_RANGE = (1, 100)
 MAX_EFFECTIVE_ITEMS = 50  # Maximum number of effective item_ids
 
 
 # Function to generate user data with zero-padding if necessary
 def generate_user_data(user_id, max_effective_items, sequence_length):
-    effective_item_count = random.randint(1, max_effective_items)  # Random number of effective items
+    effective_item_count = random.randint(2, max_effective_items)  # Random number of effective items
     effective_items = random.sample(range(*ITEM_ID_RANGE), effective_item_count)
     padding = [0] * (sequence_length - effective_item_count)  # Zero-padding
     user_sequence = padding + effective_items  # Zero-padded sequence
@@ -26,6 +26,6 @@ updated_data = [generate_user_data(user_id, MAX_EFFECTIVE_ITEMS, SEQUENCE_LENGTH
 jsonl_data = '\n'.join(json.dumps(entry) for entry in updated_data)
 
 # Saving to a file
-file_path = 'data/interaction/user_item_interaction_data_1.jsonl'
+file_path = 'small_scale_test/test_interaction.jsonl'
 with open(file_path, 'w') as file:
     file.write(jsonl_data)

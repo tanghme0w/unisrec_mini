@@ -1,4 +1,6 @@
 import copy
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -156,11 +158,28 @@ class MISSRec(SASRec):
             return self.pretrain(interaction)
 
     def full_sort_predict(self, interaction):
+        # Haomiao Tang mod begin
+        from embedding import PLMEmb
+        from config import Config
+        config = Config()
+        plm_emb = PLMEmb(config)
+        plm_emb(interaction=interaction, dataset=None)
+        # Haomiao Tang mod end
         item_seq = interaction[self.ITEM_SEQ]
         item_seq_len = interaction[self.ITEM_SEQ_LEN]
-        item_emb_list = self.moe_adaptor(self.plm_embedding(item_seq))
+        item_emb_list = self.moe_adaptor(interaction['item_emb_list'])
         seq_output = self.forward(item_seq, item_emb_list, item_seq_len)
-        test_items_emb = self.moe_adaptor(self.plm_embedding.weight)
+        # Haomiao Tang mod begin
+        # TODO: make modifiable
+        test_items_emb = np.zeros((100, 768))
+        idx_mmap = np.memmap("small_scale_test/mmap_idx_100", dtype=np.int32, shape=(100,))
+        data_mmap = np.memmap("small_scale_test/mmap_data_100_768", dtype=np.float32, shape=(100, 768))
+        for i in range(len(idx_mmap)):
+            item_index = idx_mmap[i]
+            test_items_emb[item_index][:] = data_mmap[item_index][:]
+        tie_tensor = torch.Tensor(test_items_emb)
+        test_items_emb = self.moe_adaptor(tie_tensor)
+        # Haomiao Tang mod end
         if self.train_stage == 'transductive_ft':
             test_items_emb = test_items_emb + self.item_embedding.weight
 
