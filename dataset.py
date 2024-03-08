@@ -20,6 +20,12 @@ class PretrainDataset(Dataset):
         # do preprocessing
         self._data_preprocessing()  # has no effect for now
 
+        # to be compatible with recbole.sampler.sampler.RepeatableSampler
+        self.uid_field = "user_id"
+        self.iid_field = "item_id"
+        self.user_num = self.dataset_size
+        self.item_num = config['mmap_idx_shape'][0]
+
     def _load_data(self):
         self.data_files = []
 

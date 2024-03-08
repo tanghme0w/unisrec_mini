@@ -158,6 +158,7 @@ class MISSRec(SASRec):
             return self.pretrain(interaction)
 
     def full_sort_predict(self, interaction):
+
         # Haomiao Tang mod begin
         from embedding import PLMEmb
         from config import Config
@@ -165,10 +166,12 @@ class MISSRec(SASRec):
         plm_emb = PLMEmb(config)
         plm_emb(interaction=interaction, dataset=None)
         # Haomiao Tang mod end
+
         item_seq = interaction[self.ITEM_SEQ]
         item_seq_len = interaction[self.ITEM_SEQ_LEN]
         item_emb_list = self.moe_adaptor(interaction['item_emb_list'])
         seq_output = self.forward(item_seq, item_emb_list, item_seq_len)
+
         # Haomiao Tang mod begin
         # TODO: make modifiable
         test_items_emb = np.zeros((100, 768))
@@ -180,6 +183,7 @@ class MISSRec(SASRec):
         tie_tensor = torch.Tensor(test_items_emb)
         test_items_emb = self.moe_adaptor(tie_tensor)
         # Haomiao Tang mod end
+
         if self.train_stage == 'transductive_ft':
             test_items_emb = test_items_emb + self.item_embedding.weight
 

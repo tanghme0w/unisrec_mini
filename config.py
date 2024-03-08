@@ -12,6 +12,12 @@ class Config:
         self.config['mmap_emb_path'] = 'small_scale_test/mmap_data_100_768'
         self.config['device'] = 'cpu'
         self.config['train_batch_size'] = 5
+        # eval hyperparams
+        from recbole.utils import ModelType
+        self.config["MODEL_TYPE"] = ModelType.SEQUENTIAL
+        self.config['transform'] = None     # recbole recbole.data.dataloader.abstract_dataloader construct_transform
+        self.config['eval_batch_size'] = 5
+        self.config["seed"] = 8888  # recbole.data.dataloader.abstract_dataloader
         # model hyperparameters
         self.config["n_layers"] = 2
         self.config["n_heads"] = 2
